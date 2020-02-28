@@ -17,12 +17,13 @@ class grpcConan(ConanFile):
 
     settings = "os", "arch", "compiler", "build_type"
     options = {
-        # "shared": [True, False],
+        "shared": [True, False],
         "fPIC": [True, False],
         "build_codegen": [True, False],
         "build_csharp_ext": [True, False]
     }
     default_options = {
+	"shared": True,
         "fPIC": True,
         "build_codegen": True,
         "build_csharp_ext": False
@@ -111,6 +112,9 @@ class grpcConan(ConanFile):
             cmake.definitions["CMAKE_CXX_FLAGS"] = "-D_WIN32_WINNT=0x600"
             cmake.definitions["CMAKE_C_FLAGS"] = "-D_WIN32_WINNT=0x600"
 
+        if self.options.shared:
+            cmake.definitions["BUILD_SHARED_LIBS"] = "ON"
+
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
@@ -136,8 +140,8 @@ class grpcConan(ConanFile):
         self.cpp_info.libs = [
             "grpc++",
             "grpc",
-            "grpc++_unsecure",
-            "grpc_unsecure",
+            #"grpc++_unsecure",
+            #"grpc_unsecure",
             "gpr",
             "address_sorting"
         ]
